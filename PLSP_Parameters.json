@@ -6,20 +6,18 @@
     
     "workDir":"/projectnb/planet/PLSP/",
     "logDir":"/projectnb/planet/PLSP/runLogs/",
-    "geojsonDir":"/projectnb/modislc/users/mkmoon/Planet/rawImage/geojson/",
-    "dataDir":"/projectnb/modislc/users/mkmoon/Planet/rawImage/rawImage",
+    "geojsonDir":"/projectnb/planet/PLSP/geojson/",
+    "dataDir":"/projectnb/planet/PLSP/rawImage",
     "outDir":"/projectnb/planet/PLSP/Img_cliped/",
-    "rScripts":"/usr3/graduate/mkmoon/GitHub/PlanetLSP/data_paper/",
-    "rFunctions":"/usr3/graduate/mkmoon/GitHub/PlanetLSP/data_paper/PLSP_Functions.R",
-    "productTable":"/usr3/graduate/mkmoon/GitHub/PlanetLSP/data_paper/PLSP_Layers.csv",
+    "rScripts":"/projectnb/planet/PLSP/GitHub/PlanetLSP/data_paper/",
+    "rFunctions":"/projectnb/planet/PLSP/GitHub/PlanetLSP/data_paper/PLSP_Functions.R",
+    "productTable":"/projectnb/planet/PLSP/GitHub/PlanetLSP/data_paper/PLSP_Layers.csv",
     
-    "water":"/projectnb/modislc/data/water/GSWD",
+    "water":"/projectnb/planet/PLSP/water/",
     
     "numChunks":200,
-    "numCores":28,
+    "numCores":28
     
-    "neon":true
-   
   },
   
   "phenology_parameters":{
