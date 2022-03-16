@@ -28,7 +28,7 @@ numSite <- as.numeric(args[3])
 
 
 ###############################
-params <- fromJSON(file='/usr3/graduate/mkmoon/GitHub/PSLP/PLSP_Parameters.json')
+params <- fromJSON(file='~/PLSP_Parameters.json')
 source(params$setup$rFunctions)
 
 params$setup$neon  <- FALSE
