@@ -28,7 +28,7 @@ library(geojsonR)
 library(doMC)
 library(doParallel)
 
-###############################
+########################################
 args <- commandArgs()
 print(args)
 
@@ -36,12 +36,9 @@ numSite <- as.numeric(args[3])
 # numSite <- 24
 
 
-###############################
+########################################
 params <- fromJSON(file='~/PLSP_Parameters.json')
 source(params$setup$rFunctions)
-
-params$setup$neon  <- FALSE
-params$setup$amflx <- FALSE
 
 
 ########################################
@@ -69,7 +66,7 @@ fileUDM  <- list.files(path=imgDir,pattern=glob2rx('*_DN_udm*.tif'),recursive=T,
 fileUDM2 <- list.files(path=imgDir,pattern=glob2rx('*_udm2*.tif'),recursive=T,full.names=T)
 
 
-# Dates
+## Get dates
 # yy <- substr(dfileSR,8,9)
 # mm <- substr(dfileSR,10,11)
 # dd <- substr(dfileSR,12,13)
@@ -85,7 +82,7 @@ print(length(dates))
 
 ####
 ## Image process
-# Create output directory for base image
+# Output directory for base image
 outDir <- paste0(params$setup$outDir,strSite)
 if (!dir.exists(outDir)) {dir.create(outDir)}  
 
@@ -97,13 +94,14 @@ imgBase <- GetBaseImg(fileSR,siteWin,outDir,save=T)
 ##
 registerDoMC(params$setup$numCores)
 
-# Create output directory for mosaiced images
+# Output directory for mosaiced images
 outDir <- paste0(params$setup$outDir,strSite,'/mosaic')
 if (!dir.exists(outDir)) {dir.create(outDir)}  
 
+## Do a loop for each date
 foreach(dd=1:length(dates)) %dopar% {
   
-  # Find images for a specific date
+  # Find images for a date
   imgMulti <- which(substr(dfileSR,56,63)==paste0(substr(dates[dd],1,4),substr(dates[dd],6,7),substr(dates[dd],9,10)))
   
   # Find images that have all 4 PlanetSceop bands
@@ -192,6 +190,7 @@ foreach(dd=1:length(dates)) %dopar% {
     temp3[[(length(imgVaild)+1)]] <- imgBase
     temp4[[(length(imgVaild)+1)]] <- imgBase
     
+    # Check their spatial infomation
     for(i in 1:length(imgVaild)){
       log <- try(compareRaster(temp1[[i]],imgBase,extent=F,rowcol=F),silent=T)
       if(inherits(log,'try-error')){
@@ -221,7 +220,6 @@ foreach(dd=1:length(dates)) %dopar% {
     Rast <- brick(rast1,rast2,rast3,rast4)
     
     # Save
-    
     outFile    <- paste0(outDir,'/',substr(dates[dd],1,4),substr(dates[dd],6,7),substr(dates[dd],9,10),'_cliped_mosaic.tif')
     writeRaster(Rast, filename=outFile, format="GTiff", overwrite=TRUE)
 
