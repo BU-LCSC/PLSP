@@ -30,7 +30,7 @@ cc      <- as.numeric(substr(args[3],4,6))
 
 
 ###############################
-params <- fromJSON(file='/usr3/graduate/mkmoon/GitHub/PlanetLSP/data_paper/PLSP_Parameters.json')
+params <- fromJSON(file='~/PLSP_Parameters.json')
 source(params$setup$rFunctions)
 
 
