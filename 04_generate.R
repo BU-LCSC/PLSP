@@ -7,7 +7,15 @@
 # Author: Minkyu Moon; moon.minkyu@gmail.com
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
-
+#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+# Submitted to the job for a site with shell script:
+# #!/bin/bash
+# echo Submitting $1
+# R --vanilla < ~/04_LSP_script.R $1
+#
+# example submission command using default parameters:
+# qsub -V -pe omp 4 -l h_rt=12:00:00 run_04.sh numSite
+#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
 library(raster)
 library(rgdal)
@@ -15,7 +23,7 @@ library(gdalUtils)
 library(rjson)
 
 
-###############################
+########################################
 args <- commandArgs()
 print(args)
 
@@ -32,7 +40,7 @@ phenYrs <- params$setup$phenStartYr:params$setup$phenEndYr
 
 
 ########################################
-## Get site name, image directory and coordinate
+# Get site name, image directory and coordinate
 strSite <- list.dirs(params$setup$outDir,full.names=F,recursive=F)[numSite]
 print(strSite)
 
@@ -43,16 +51,15 @@ files <- list.files(path=ckPheDir,pattern=glob2rx('*.rda'),full.names=T)
 print(length(files))
 
 
-
-#Get all images to process
 ########################################
+# Get all images to process
 imgBase <- raster(paste0(params$setup$outDir,strSite,'/base_image.tif'))
 numPix <- length(imgBase)
 numChunks <- params$setup$numChunks
 chunk <- numPix%/%numChunks
 
 
-
+########################################
 # Save
 pheDir <- paste0(params$setup$workDir,'Product_010/',strSite)
 if (!dir.exists(pheDir)) {dir.create(pheDir)}
@@ -128,12 +135,4 @@ for(yToDo in 1:length(phenYrs)){
   
   print(yToDo)
 }
-
-
-
-
-
-
-
-
 
