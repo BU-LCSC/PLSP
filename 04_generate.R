@@ -11,7 +11,7 @@
 # Submitted to the job for a site with shell script:
 # #!/bin/bash
 # echo Submitting $1
-# R --vanilla < ~/04_LSP_script.R $1
+# R --vanilla < ~/04_generate.R $1
 #
 # example submission command using default parameters:
 # qsub -V -pe omp 4 -l h_rt=12:00:00 run_04.sh numSite
@@ -61,7 +61,7 @@ chunk <- numPix%/%numChunks
 
 ########################################
 # Save
-pheDir <- paste0(params$setup$workDir,'Product_010/',strSite)
+pheDir <- paste0(params$setup$workDir,'Product_GeoTiff/',strSite)
 if (!dir.exists(pheDir)) {dir.create(pheDir)}
 
 
