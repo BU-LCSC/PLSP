@@ -4,24 +4,13 @@
 #
 # 01: A script for PlanetScope image process
 # 
-# Author: Minkyu Moon, Josh Gray, Douglas Bolton
+# Author: Minkyu Moon, Josh Gray, and Douglas Bolton
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
 
 #---------------------------------------------------------------------
-#Despike time-series
-# Uses the Maja approach to get positive time-series spikes associated with clouds
-# See Section 2.1.4 in this document: https://www.theia-land.fr/sites/default/files/imce/produits/atbd_maja_071217.pdf
-# The maja approach relies on both the blue and red bands (If change is red is 1.5x the change in blue, it is likely a land condition change)
-# In addition, a 3 point method is used to look for negative spikes in EVI2. This step is added because the Maja approach won't capture
-# spikes associated with cloud shadow
-# Vectorized to avoid looping through dates
-# Douglas Bolton
-#
-# Added the outlier detection for VI 
-# that is based on the double-differenced time series, 
-# using the median of absolute deviation about the median (MAD) (Sachs, 1996).
-# Minkyu Moon
+# Despike time-series
+# Written by Douglas Bolton and Minkyu Moon
 #---------------------------------------------------------------------
 CheckSpike_MultiBand <- function(blue,red,vi, dates, pheno_pars){
   
@@ -99,7 +88,7 @@ CheckSpike_MultiBand <- function(blue,red,vi, dates, pheno_pars){
 
 
 #----------------------------------------------------------
-# Fit a cubic spline to the HLS time-series
+# Fit a cubic spline to VI time-series
 # Written by Josh Gray and Douglas Bolton
 #----------------------------------------------------------
 Smooth_VI <- function(x, dates, pred_dates, weights, pheno_pars, dormant_value) {
@@ -117,7 +106,6 @@ Smooth_VI <- function(x, dates, pred_dates, weights, pheno_pars, dormant_value) 
 
 
 #----------------------------------------------------------
-# New from Josh - 2018-10-31
 # Finds time-series peaks
 # Josh Gray
 #----------------------------------------------------------
@@ -140,7 +128,6 @@ FindPeaks <- function(x, mag_order=T){
 
 
 #----------------------------------------------------------
-# New from Josh - 2018-10-31
 # Determines valid segments 
 # Josh Gray
 #----------------------------------------------------------
@@ -317,7 +304,7 @@ GetSegThresh <- function(seg, x, thresh, gup=T){
 
 
 #----------------------------------------------------------
-# Developed by Josh Gray, updated by Minkyu Moon for PlanetScope
+# Developed by Josh Gray, updated by Minkyu Moon 
 #----------------------------------------------------------
 GetSegMetrics <- function(seg, x_smooth, x_raw, smooth_dates, raw_dates){
   if(any(is.na(seg))){return(NA)}
@@ -385,9 +372,8 @@ GetSegMetrics <- function(seg, x_smooth, x_raw, smooth_dates, raw_dates){
 
 #----------------------------------------------------------
 # When a cycle is not detected, return a subset of metrics for the calendar year
-# For now, returning evi amplitude, evi maximum, and evi area
-# Douglas Bolton
-# adapted by Minkyu Moon  
+# Returning evi maximum, evi amplitude, evi area and number of observation
+# Written by Douglas Bolton, and adapted by Minkyu Moon  
 #----------------------------------------------------------
 annualMetrics <- function(viSub, dateSub, smoothed_vi, pred_dates, yr, pheno_pars, vi_dorm, waterMask) {
   out <- c(NA,rep(NA,10),4,rep(NA,10),4,NA)
@@ -429,7 +415,7 @@ annualMetrics <- function(viSub, dateSub, smoothed_vi, pred_dates, yr, pheno_par
 
 #---------------------------------------------------------------------
 # Calculate QA 
-# Code adapted by Minkyu Moon  
+# Minkyu Moon  
 #---------------------------------------------------------------------
 GetQAs <- function(gup_rsq, gdown_rsq, gup_maxgap, gdown_maxgap, theOrd, qa_pars){
 
@@ -498,8 +484,7 @@ GetQAs <- function(gup_rsq, gdown_rsq, gup_maxgap, gdown_maxgap, theOrd, qa_pars
 
 #---------------------------------------------------------------------
 # Calculate weights
-# Douglas Bolton
-# Adapted by Minkyu Moon  
+# Written by Douglas Bolton, and adapted by Minkyu Moon  
 #---------------------------------------------------------------------
 calculateWeights <- function(smoothMat_Masked, numDaysFit, numYrs, pheno_pars) {
   outWeights <- array(0, dim = c(numDaysFit, numYrs, numYrs))
@@ -538,7 +523,7 @@ calculateWeights <- function(smoothMat_Masked, numDaysFit, numYrs, pheno_pars) {
 
 #---------------------------------------------------------------------
 # Calculate pheno metrics for each pixel
-# Code adapted by Minkyu Moon  
+# Written by Douglas Bolton, and updated by Minkyu Moon  
 #---------------------------------------------------------------------
 DoPhenologyPlanet <- function(blue, green, red, nir, dates, phenYrs, params, waterMask){
   
@@ -896,7 +881,7 @@ GetSiteInfo <- function(numSite, geojsonDir, params){
 
 
 #---------------------------------------------------------------------
-# Get site shape file
+# Create site shape file
 # Minkyu Moon 
 #---------------------------------------------------------------------
 GetSiteShp <- function(fileSR, cLong, cLat){
@@ -923,7 +908,7 @@ GetSiteShp <- function(fileSR, cLong, cLat){
 
 
 #---------------------------------------------------------------------
-# Get base image
+# Create base image
 # Minkyu Moon 
 #---------------------------------------------------------------------
 GetBaseImg <- function(fileSR, siteWin, outDir, save=TRUE){
@@ -976,9 +961,5 @@ GetBaseImg <- function(fileSR, siteWin, outDir, save=TRUE){
   
   return(imgBase)
 }
-
-
-
-
 
 
