@@ -1,3 +1,13 @@
+#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+# 
+# A High Spatial Resolution Land Surface Phenology Dataset for AmeriFlux and NEON Sites
+#
+# 01_1: An ancillary script for creating water mask
+# 
+# Author: Minkyu Moon; moon.minkyu@gmail.com
+#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+
+
 library(raster)
 library(rgdal)
 library(gdalUtils)
@@ -15,7 +25,8 @@ ck      <- as.numeric(substr(args[3],4,5))
 
 
 ###############################
-params <- fromJSON(file='/usr3/graduate/mkmoon/GitHub/PlanetLSP/data_paper/PLSP_Parameters.json')
+# Load parameters and functions
+params <- fromJSON(file='~/PLSP_Parameters.json')
 source(params$setup$rFunctions)
 
 
@@ -33,7 +44,9 @@ imgBase <- raster(paste0(params$setup$outDir,strSite,'/base_image.tif'))
 
 ########################################
 ## Water mask
-waterFiles <- list.files('/projectnb/modislc/data/water/GSWD',full.names=T)
+# Load water mask data
+# Pekel et al., 2016. High-resolution mapping of global surface water and its long-term changes. Nature, 540(7633), pp.418-422.
+waterFiles <- list.files(params$setup$water,full.names=T)
 
 waterTile <- c()
 j <- 1
