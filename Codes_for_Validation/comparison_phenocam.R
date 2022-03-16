@@ -12,7 +12,7 @@ library(viridis)
 args <- commandArgs()
 print(args)
 
-ss <- as.numeric(args[3])
+ss <- as.numeric(args[3]) # site
 # ss <- 103
 
 vari <- c('50PCGI','50PCGD')
@@ -22,7 +22,7 @@ vari <- c('50PCGI','50PCGD')
 Rast <- vector('list',10); ind <- 1
 for(vv in 1:2){
   for(yy in 2017:2021){
-    imgs <- list.files('/projectnb/planet/PLSP/Product_010',pattern=glob2rx(paste0('*',yy,'_',vari[vv],'.tif')),full.names=T,recursive=T)  
+    imgs <- list.files(params$setup$outDir,pattern=glob2rx(paste0('*',yy,'_',vari[vv],'.tif')),full.names=T,recursive=T)  
     
     Rast[[ind]] <- raster(imgs[ss])    
     
@@ -35,10 +35,7 @@ siteStr <- unlist(strsplit(imgs[ss],'/'))[6]
 print(siteStr)
 
 
-siteFull <- read.csv('/projectnb/modislc/users/mkmoon/Planet/data_paper/data/site_full_w_pc_hls_PCrevised_ext.csv')
-
-# afcd <- siteFull$Site_amerifulx[which(siteFull$Site==substr(siteStr,5,80))]
-# vgty <- siteFull$Veg[which(siteFull$Site==substr(siteStr,5,80))]
+siteFull <- read.csv('~/site_list.csv')
 afcd <- siteFull$Site_amerifulx[which(siteFull$Site==siteStr)]
 vgty <- siteFull$Veg[which(siteFull$Site==siteStr)]
 
@@ -66,7 +63,7 @@ bb   <- spTransform(bb,geog_crs)
   
   
 # Find associate PhenoCam site
-pcMeta <- list.files('/projectnb/planet/PhenoCam/PhenoCam_V3/data_record_1',pattern='*_meta.json',full.names=T)
+pcMeta <- list.files('~/PhenoCam_V3/data_record_1',pattern='*_meta.json',full.names=T)
 
 siteWPC <- c()
 for(i in 1:length(pcMeta)){
@@ -99,7 +96,7 @@ for(i in 1:length(pcMeta)){
                   meta$phenocam_site$date_end,
                   meta$phenocam_site$landcover_igbp,
                   meta$phenocam_site$site_acknowledgements)
-    save(siteMeta,file=paste0('/projectnb/modislc/users/mkmoon/Planet/data_paper/data/comp_phenocam/site_pc_list/pc_',afcd,'_',meta$phenocam_site$sitename,'.rda'))
+    save(siteMeta,file=paste0('~/data/comp_phenocam/site_pc_list/pc_',afcd,'_',meta$phenocam_site$sitename,'.rda'))
   } 
   
   if(i%%100==0) print(i)
@@ -114,8 +111,8 @@ if(length(siteWPC)>0){
 
 
   for(i in 1:length(siteWPC)){
-    fJson <- list.files('/projectnb/planet/PhenoCam/PhenoCam_V3/data_record_1',pattern=glob2rx(paste0(siteWPC[i],'_*json')),full.names=T)
-    fMetr <- list.files('/projectnb/planet/PhenoCam/PhenoCam_V3/data_record_5',pattern=glob2rx(paste0(siteWPC[i],'_*3day_transition_dates.csv')),full.names=T)
+    fJson <- list.files('~/PhenoCam_V3/data_record_1',pattern=glob2rx(paste0(siteWPC[i],'_*json')),full.names=T)
+    fMetr <- list.files('~/PhenoCam_V3/data_record_5',pattern=glob2rx(paste0(siteWPC[i],'_*3day_transition_dates.csv')),full.names=T)
     
     if(length(fMetr)>0){
       
@@ -161,7 +158,7 @@ if(length(siteWPC)>0){
       
       save(afcd,vgty,meta,
            dat1,dat2,dat3,dat4,
-           file=paste0('/projectnb/modislc/users/mkmoon/Planet/data_paper/data/comp_phenocam/ext/pc_',siteStr,'_',siteWPC[i],'.rda'))
+           file=paste0('~/data/comp_phenocam/ext/pc_',siteStr,'_',siteWPC[i],'.rda'))
   
     }
 
@@ -176,8 +173,10 @@ if(length(siteWPC)>0){
 
 ########################################
 #
+#
 ########################################
-files <- list.files('/projectnb/modislc/users/mkmoon/Planet/data_paper/data/comp_phenocam/ext',pattern=glob2rx('*.rda'),full.names=T)
+# Load files
+files <- list.files('~/data/comp_phenocam/ext',pattern=glob2rx('*.rda'),full.names=T)
 
 
 datMet1 <- c();  datVal1 <- c(); datAF1 <- c()
@@ -225,15 +224,6 @@ mycol <- brewer.pal(12,'Paired')
 vgt <- sort(unique(c(datMet1,datMet2)))
 siteList <- sort(unique(c(datAF1,datAF2)))
 
-# siteFull <- read.csv('/projectnb/modislc/users/mkmoon/Planet/data_paper/data/site_full_w_pc_hls.csv')
-# 
-# siteFull$X..of.PhenoCam <- 0
-# for(i in 1:length(siteList)){
-#   siteFull$X..of.PhenoCam[which(siteFull$Site_amerifulx==siteList[i])] <- 1
-# }
-# # write.csv(siteFull,file='/projectnb/modislc/users/mkmoon/Planet/data_paper/data/site_full_w_pc_hls_PCrevised.csv')
-
-
 
 vgt1 <- matrix(NA,length(datMet1),1)
 vgt2 <- matrix(NA,length(datMet2),1)
@@ -269,7 +259,7 @@ for(i in 1:length(vgt2)){
 
 
 ###
-setwd('/projectnb/modislc/users/mkmoon/Planet/data_paper/figure/')
+setwd('~/figure/')
 png(filename='1to1_pc_ext.png',width=12,height=6,unit='in',res=600)
 
 par(mfrow=c(1,2),oma=c(1,1,2,2),mar=c(4,4,1,1),mgp=c(2.7,0.8,0))
@@ -317,26 +307,3 @@ text(-50,380,'50PCGD',cex=1.7,pos=4,font=2)
 
 dev.off()
 
-
-
-
-########################################
-# PhenoCam meta
-library(dplyr)
-library(tibble)
-
-files <- list.files('/projectnb/modislc/users/mkmoon/Planet/data_paper/data/comp_phenocam/site_pc_list',full.names = T)
-
-df <- as.data.frame(matrix(NA,length(files),12))
-for(i in 1:length(files)){
-  load(files[i])
-  df[i,1:length(siteMeta)] <- siteMeta
-}
-length(unique(df$V1))
-length(unique(df$V2))
-
-dat <- df %>%
-  rownames_to_column() %>%
-  filter(!duplicated(V2))
-# 
-# write.csv(dat,file='/projectnb/modislc/users/mkmoon/Planet/data_paper/data/comp_phenocam/pc_site_meta_ext.csv')
