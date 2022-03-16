@@ -7,6 +7,15 @@
 # Author: Minkyu Moon; moon.minkyu@gmail.com
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
+#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+# Submitted to the job for a single chunk for a site with shell script:
+# #!/bin/bash
+# echo Submitting $1
+# R --vanilla < ~/03_LSP_script.R $1
+#
+# example submission command using default parameters:
+# qsub -V -l h_rt=12:00:00 run_03.sh numSite chunk
+#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
 library(raster)
 library(rgdal)
@@ -19,20 +28,18 @@ library(doMC)
 library(doParallel)
 
 
-###############################
+########################################
 args <- commandArgs()
 print(args)
 
-numSite <- as.numeric(substr(args[3],1,3))
-cc      <- as.numeric(substr(args[3],4,6))
+numSite <- as.numeric(substr(args[3],1,3)) # site
+cc      <- as.numeric(substr(args[3],4,6)) # chunk number; 1-200
 # numSite <- 5; cc <- 50
 
 
-
-###############################
+########################################
 params <- fromJSON(file='~/PLSP_Parameters.json')
 source(params$setup$rFunctions)
-
 
 
 ########################################
@@ -78,11 +85,8 @@ for (i in 1:numPix){
 
 
 # Save
-ckPheDir <- paste0(params$setup$outDir,strSite,'/chunk_phe_gap_006')
+ckPheDir <- paste0(params$setup$outDir,strSite,'/chunk_phe')
 if (!dir.exists(ckPheDir)) {dir.create(ckPheDir)}
 
 save(pheno_mat,file=paste0(ckPheDir,'/chunk_phe_',ckNum,'.rda'))
-
-
-
 
