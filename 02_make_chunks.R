@@ -7,6 +7,15 @@
 # Author: Minkyu Moon; moon.minkyu@gmail.com
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
+#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+# Submitted to the job for each site with shell script:
+# #!/bin/bash
+# echo Submitting $1
+# R --vanilla < ~/02_make_chunks.R $1
+#
+# example submission command using default parameters:
+# qsub -V -pe omp 28 -l h_rt=12:00:00 run_02.sh numSite
+#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
 library(raster)
 library(rgdal)
@@ -18,7 +27,7 @@ library(geojsonR)
 library(doMC)
 library(doParallel)
 
-###############################
+########################################
 args <- commandArgs()
 print(args)
 
@@ -26,7 +35,7 @@ numSite <- as.numeric(args[3])
 # numSite <- 51
 
 
-###############################
+########################################
 params <- fromJSON(file='~/PLSP_Parameters.json')
 source(params$setup$rFunctions)
 
@@ -39,8 +48,7 @@ imgDir <- paste0(params$setup$outDir,strSite,'/mosaic')
 print(imgDir)
 
 
-
-###############################
+########################################
 dfiles <- list.files(path=imgDir,pattern=glob2rx('*mosaic.tif'))
 files  <- list.files(path=imgDir,pattern=glob2rx('*mosaic.tif'),full.names=T)
 
@@ -59,16 +67,19 @@ imgBase <- raster(paste0(params$setup$outDir,strSite,'/base_image.tif'))
 numCk <- params$setup$numChunks
 chunk <- length(imgBase)%/%numCk
 
+# Output directory
 ckDir <- paste0(params$setup$outDir,strSite,'/chunk')
 if (!dir.exists(ckDir)) {dir.create(ckDir)}
 
+# Directory for temporal outputs
 ckDirTemp <- paste0(params$setup$outDir,strSite,'/chunk/temp')
 if (!dir.exists(ckDirTemp)) {dir.create(ckDirTemp)}
 
 
 
-###############################
-# Save chunks as temporal files
+########################################
+# For each image corresponded to each date,
+# divede images into chunks, and save them as temporal files
 registerDoMC(params$setup$numCores)
 
 foreach(i=1:length(dates)) %dopar%{
@@ -97,8 +108,8 @@ foreach(i=1:length(dates)) %dopar%{
 }
 
 
-###############################
-# Load, merge, and save
+########################################
+# Load files for each chunk, merge then, and save 
 foreach(cc=1:numCk) %dopar%{
   ckNum <- sprintf('%03d',cc)
   dirTemp <- paste0(ckDirTemp,ckNum)
