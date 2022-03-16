@@ -7,6 +7,15 @@
 # Author: Minkyu Moon; moon.minkyu@gmail.com
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
+#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+# Submitted to the job for a single chunk for a site with shell script:
+# #!/bin/bash
+# echo Submitting $1
+# R --vanilla < ~/05_netCDF.R $1
+#
+# example submission command using default parameters:
+# qsub -V -pe omp 2 -l h_rt=12:00:00 run_05.sh numSite
+#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
 library(raster)
 library(rgdal)
@@ -34,7 +43,7 @@ print(strSite)
 
 
 ########################################
-inBase <- paste0(params$setup$workDir,'Product_010/')
+inBase <- paste0(params$setup$workDir,'Product_GeoTiff/')
 outBase <- paste0(params$setup$workDir,'Product_netCDF/')
 
 sites <- list.dirs(inBase,recursive=F,full.names=F)
@@ -59,6 +68,7 @@ dimy = ncdim_def(name = 'y', longname = 'y coordinate', units='m', vals = rev(as
 
 
 ########################################
+# Do a loop for 5 years; 2017-2021
 for(yy in 1:5){
   # Load files
   files <- list.files(paste0(inBase,site,'/',(2016+yy)),pattern=glob2rx(paste('*.tif',sep='')),full.names=T)
