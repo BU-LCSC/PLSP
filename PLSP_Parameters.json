@@ -13,6 +13,8 @@
     "rFunctions":"/usr3/graduate/mkmoon/GitHub/PlanetLSP/data_paper/PLSP_Functions.R",
     "productTable":"/usr3/graduate/mkmoon/GitHub/PlanetLSP/data_paper/PLSP_Layers.csv",
     
+    "water":"/projectnb/modislc/data/water/GSWD",
+    
     "numChunks":200,
     "numCores":28,
     
