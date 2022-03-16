@@ -7,6 +7,15 @@
 # Author: Minkyu Moon; moon.minkyu@gmail.com
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
+#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+# Submitted to the job for each site with shell script:
+# #!/bin/bash
+# echo Submitting $1
+# R --vanilla < ~/01_img_process.R $1
+#
+# example submission command using default parameters:
+# qsub -V -pe omp 28 -l h_rt=12:00:00 run_01.sh numSite
+#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
 library(raster)
 library(rgdal)
