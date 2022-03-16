@@ -59,11 +59,10 @@ imgBase <- raster(paste0(params$setup$outDir,strSite,'/base_image.tif'))
 numCk <- params$setup$numChunks
 chunk <- length(imgBase)%/%numCk
 
-# ckDir <- paste0(params$setup$outDir,strSite,'/chunk')
-ckDir <- paste0('/projectnb/modislc/users/mkmoon/Planet/rawImage/chunks/',strSite)
+ckDir <- paste0(params$setup$outDir,strSite,'/chunk')
 if (!dir.exists(ckDir)) {dir.create(ckDir)}
 
-ckDirTemp <- paste0('/projectnb/modislc/users/mkmoon/Planet/rawImage/chunks/',strSite,'/temp')
+ckDirTemp <- paste0(params$setup$outDir,strSite,'/chunk/temp')
 if (!dir.exists(ckDirTemp)) {dir.create(ckDirTemp)}
 
 
@@ -80,7 +79,7 @@ foreach(i=1:length(dates)) %dopar%{
   
   foreach(cc=1:numCk) %dopar%{
     ckNum <- sprintf('%03d',cc)
-    dirTemp <- paste0('/projectnb/modislc/users/mkmoon/Planet/rawImage/chunks/',strSite,'/temp/',ckNum)
+    dirTemp <- paste0(ckDirTemp,ckNum)
     if (!dir.exists(dirTemp)) {dir.create(dirTemp)}
     
     if(cc==numCk){
@@ -102,7 +101,7 @@ foreach(i=1:length(dates)) %dopar%{
 # Load, merge, and save
 foreach(cc=1:numCk) %dopar%{
   ckNum <- sprintf('%03d',cc)
-  dirTemp <- paste0('/projectnb/modislc/users/mkmoon/Planet/rawImage/chunks/',strSite,'/temp/',ckNum)
+  dirTemp <- paste0(ckDirTemp,ckNum)
   files <- list.files(dirTemp,full.names=T)
   
   if(cc==numCk){
