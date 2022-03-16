@@ -3,7 +3,7 @@
 """
 A script for dowlonding PlanetScope imagery
 
-Author: milechin, adapted by Minkyu Moon
+Author: Dennis Milechin, and adapted by Minkyu Moon
 """
 
 import sys
