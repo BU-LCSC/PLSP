@@ -87,7 +87,7 @@ for(yy in 1:5){
       if (lyr$data_type == 'Int16') {precision <- "short"}  #All are int16, so this isn't necessary
           
       # Create the variable, add to the list. Define the short_name, units, fill_value, long_name, and precision from the product table 
-      results[[i+1]] <- ncvar_def(lyr$short_name, lyr$units, list(dimx,dimy), lyr$fill_value, lyr$long_name, prec=precision, compression=2)  
+      results[[i+1]] <- ncvar_def(lyr$short_name, lyr$units, list(dimx,dimy), NULL, lyr$long_name, prec=precision, compression=2)  
   }
         
   # Now create the netCDF file with the defined variables
@@ -101,6 +101,8 @@ for(yy in 1:5){
           
       # Open the data          
       mat <- matrix(values(raster(files[i],varname=lyr$short_name)),length(x),length(y))
+      # Assign fill value for pixels having values that outside of valid range or no-data
+      mat[mat < lyr$valid_min | mat > lyr$valid_max | is.na(mat)] <- lyr$fill_value
       # Put the image into the file
       ncvar_put(ncout,results[[i+1]], mat) 
       
