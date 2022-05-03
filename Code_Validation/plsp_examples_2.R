@@ -8,7 +8,7 @@ numSite <- 8
 
 
 ########################################
-params <- fromJSON(file='/usr3/graduate/mkmoon/GitHub/PlanetLSP/data_paper/PLSP_Parameters.json')
+params <- fromJSON(file='~/PLSP_Parameters.json')
 source(params$setup$rFunctions)
 
 
@@ -19,7 +19,7 @@ geojsonDir <- params$setup$geojsonDir
 strSite <- list.dirs(params$setup$outDir,full.names=F,recursive=F)[numSite]
 print(strSite)
 
-ckDir <- paste0('/projectnb/modislc/users/mkmoon/Planet/rawImage/chunks/',strSite)
+ckDir <- paste0('~/',strSite)
 print(ckDir)
 
 
@@ -174,6 +174,7 @@ prevYear <- daysVec <= pheno_pars$splineBuffer
 inYear <- daysVec > pheno_pars$splineBuffer & daysVec <= (pheno_pars$splineBuffer+365)
 nextYear <- daysVec > (pheno_pars$splineBuffer+365)
 
+# For a year 2019
 for(y in 3){
   pred_dates <- seq(splineStart[y], splineEnd[y], by="day")
   
@@ -262,9 +263,9 @@ pcDat <- pcDat[880:1244,]
 pcDat <- na.omit(pcDat)
 
 
-
+######################################################
 ###
-setwd('/projectnb/modislc/users/mkmoon/Planet/data_paper/figure/')
+setwd('~/figure/')
 png(filename='pt_ts_alfalfa.png',width=13.8,height=5,unit='in',res=600)
 
 
@@ -304,16 +305,3 @@ legend('topleft',
 
 
 dev.off()
-
-
-
-
-# ######################################################
-# cdl <- raster('/projectnb/modislc/data/lc_database/regional/united_states/cropland_data_layer/hls_tiles/2019/cdl_10SFH.tif')
-# pr3 <- projectExtent(cdl,crs(imgBase))
-# res(pr3) <- 30
-# pr3 <- projectRaster(cdl,pr3,method='ngb')
-# pr3 <- crop(pr3,imgBase)
-# plot(pr3)
-# writeRaster(pr3,filename='/projectnb/modislc/users/mkmoon/Planet/data_paper/data/cdl/cdl_alfalfa.tif', format="GTiff", overwrite=TRUE)
-
