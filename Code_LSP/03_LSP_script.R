@@ -38,6 +38,7 @@ cc      <- as.numeric(substr(args[3],4,6)) # chunk number; 1-200
 
 
 ########################################
+## Load parameters
 params <- fromJSON(file='~/PLSP_Parameters.json')
 source(params$setup$rFunctions)
 
@@ -50,6 +51,7 @@ print(strSite)
 ckDir <- paste0(params$setup$outDir,strSite,'/chunk')
 print(ckDir)
 
+## Load chunk image
 ckNum <- sprintf('%03d',cc)
 file <- list.files(path=ckDir,pattern=glob2rx(paste0('*',ckNum,'.rda')),full.names=T)
 
@@ -84,7 +86,7 @@ for (i in 1:numPix){
 }
 
 
-# Save
+# Save outputs
 ckPheDir <- paste0(params$setup$outDir,strSite,'/chunk_phe')
 if (!dir.exists(ckPheDir)) {dir.create(ckPheDir)}
 
