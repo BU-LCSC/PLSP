@@ -36,11 +36,13 @@ numSite <- as.numeric(args[3])
 
 
 ########################################
+## Load parameters
 params <- fromJSON(file='~/PLSP_Parameters.json')
 source(params$setup$rFunctions)
 
 
 ########################################
+## Load mosaiced images
 strSite <- list.dirs(params$setup$outDir,full.names=F,recursive=F)[numSite]
 print(strSite)
 
@@ -52,7 +54,7 @@ print(imgDir)
 dfiles <- list.files(path=imgDir,pattern=glob2rx('*mosaic.tif'))
 files  <- list.files(path=imgDir,pattern=glob2rx('*mosaic.tif'),full.names=T)
 
-# Dates
+# Get dates
 yy <- substr(dfiles,3,4)
 mm <- substr(dfiles,5,6)
 dd <- substr(dfiles,7,8)
@@ -61,17 +63,17 @@ dates <- as.Date(paste(mm,'/',dd,'/',yy,sep=''),'%m/%d/%y')
 print(length(dates))
 
 
-# Divide into chunks
+# Divide mosaiced images into chunks
 imgBase <- raster(paste0(params$setup$outDir,strSite,'/base_image.tif'))
 
-numCk <- params$setup$numChunks
+numCk <- params$setup$numChunks # 200
 chunk <- length(imgBase)%/%numCk
 
 # Output directory
 ckDir <- paste0(params$setup$outDir,strSite,'/chunk')
 if (!dir.exists(ckDir)) {dir.create(ckDir)}
 
-# Directory for temporal outputs
+# Directory for temporal outputs (which will be deleted at the end of the process)
 ckDirTemp <- paste0(params$setup$outDir,strSite,'/chunk/temp')
 if (!dir.exists(ckDirTemp)) {dir.create(ckDirTemp)}
 
