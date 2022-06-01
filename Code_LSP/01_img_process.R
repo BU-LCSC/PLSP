@@ -37,6 +37,7 @@ numSite <- as.numeric(args[3])
 
 
 ########################################
+## Load parameters
 params <- fromJSON(file='~/PLSP_Parameters.json')
 source(params$setup$rFunctions)
 
@@ -56,7 +57,7 @@ print(paste(cLong,';',cLat))
 
 
 ########################################
-## List of files
+## Get list of files
 dfileSR   <- list.files(path=imgDir,pattern=glob2rx('*MS_SR*.tif'),recursive=T)
 dfileUDM  <- list.files(path=imgDir,pattern=glob2rx('*_DN_udm*.tif'),recursive=T)
 dfileUDM2 <- list.files(path=imgDir,pattern=glob2rx('*_udm2*.tif'),recursive=T)
@@ -67,9 +68,6 @@ fileUDM2 <- list.files(path=imgDir,pattern=glob2rx('*_udm2*.tif'),recursive=T,fu
 
 
 ## Get dates
-# yy <- substr(dfileSR,8,9)
-# mm <- substr(dfileSR,10,11)
-# dd <- substr(dfileSR,12,13)
 yy <- substr(dfileSR,58,59)
 mm <- substr(dfileSR,60,61)
 dd <- substr(dfileSR,62,63)
@@ -80,9 +78,9 @@ print(length(dates))
 
 
 
-####
+########################################
 ## Image process
-# Output directory for base image
+## Set output directory for base image
 outDir <- paste0(params$setup$outDir,strSite)
 if (!dir.exists(outDir)) {dir.create(outDir)}  
 
