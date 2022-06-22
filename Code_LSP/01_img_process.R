@@ -119,7 +119,7 @@ foreach(dd=1:length(dates)) %dopar% {
     }
   }
   
-  # If the number of images that have 4 bands, load them and create a mosaiced image 
+  # If the number of images that have 4 bands is more than zero, load them and create a mosaiced image 
   if(length(imgVaild)>0){
     
     imgB <- vector('list',length(imgVaild))
