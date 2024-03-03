@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-A script for dowlonding PlanetScope imagery
+Created on Wed May 19 14:27:44 2021
 
-Author: Dennis Milechin, and adapted by Minkyu Moon
+@author: milechin
 """
 
 import sys
@@ -61,7 +61,7 @@ def setup_filter(coords, minyear, maxyear):
     asset = {
             "type": "AssetFilter",
             "config": [
-                "analytic_sr", "analytic", "udm2"
+                "ortho_analytic_4b_sr", "ortho_analytic_4b", "ortho_udm2"
             ]
         }
 
@@ -100,6 +100,7 @@ def read_geometry(path):
     
 
 def place_order(request, auth, order_name):
+    print('Placing order!')
     headers = {'content-type': 'application/json'}
     
     response = requests.post(orders_url, data=json.dumps(request), auth=auth, headers=headers)
@@ -181,19 +182,13 @@ def poll_for_success(order_url, auth):
 def main(argv):
     start_time = time.time()
     
-    #geometry_path= argv[0]
-    #min_year=argv[1]
-    #max_year=argv[2]
-    #output_dir=argv[3]
-    #check_existing_orders=argv[4]
-    
     site_num = pandas.to_numeric(argv[0])
-    
-    
-    geometry_path = "~/geojson"
-    min_year = 2016
-    max_year = 2023
-    output_dir = "~/rawImage"
+    geometry_path = "/projectnb/modislc/users/seamorez/HLS_FCover/PLSP/geojson"
+    min_year=argv[1]
+    max_year=argv[2]
+    #min_year = 2022
+    #max_year = 2023
+    output_dir = "/projectnb/modislc/users/seamorez/HLS_FCover/PLSP/rawImage"
     check_existing_orders="True"
     
     print("Input Params:")
@@ -203,13 +198,12 @@ def main(argv):
     print("output_dir={}".format(output_dir))
     print("check_existing_orders={}".format(check_existing_orders))
     
-    
-    
     if(os.path.isdir(output_dir) == False):
         sys.exit("{} does not exist.".format(output_dir))
     
     #PLANET_API_KEY = os.getenv('PL_API_KEY')
-    PLANET_API_KEY = "API_KEY"
+    #PLANET_API_KEY = "3feab9a6cc1b4c1e8d65281025ad3382"
+    PLANET_API_KEY = "PLAK8851ade7849744d294893d009ef4b87f"
     
     # Setup the session
     session = requests.Session()
@@ -273,7 +267,7 @@ def main(argv):
                 request = {
                     "interval" : "year",
                     "filter" : filter,
-                    "item_types" : ["PSScene4Band"]
+                    "item_types" : ["PSScene"]
                     }
         
                 # Send the POST request to the API stats endpoint
@@ -290,7 +284,7 @@ def main(argv):
                 print("do a real search.")
                 request = {
                     "filter" : filter,
-                    "item_types" : ["PSScene4Band"]
+                    "item_types" : ["PSScene"]
                     }
         
                 # Send the POST request to the API quick search endpoint
@@ -386,7 +380,7 @@ def main(argv):
                     if(check_existing_orders == "True"):
                         
                         print("\n Checking existing orders")
-                        #orders_list = response.json()["orders"]
+                        orders_list = response.json()["orders"]
                         
                         for order in orders_list:
                             if(order["name"] == order_name):
@@ -394,18 +388,17 @@ def main(argv):
                                 orders_url_list.append(order["_links"]["_self"])
                         
                     
-                    else:
                         feature_coords_buffer = feature_coords
                         feature_coords_buffer[0][0][0] = feature_coords_buffer[0][0][0] - 0.0015
-                        feature_coords_buffer[0][0][1] = feature_coords_buffer[0][0][1] + 0.0015    
+                        feature_coords_buffer[0][0][1] = feature_coords_buffer[0][0][1] - 0.0015    
                         feature_coords_buffer[0][1][0] = feature_coords_buffer[0][1][0] + 0.0015
-                        feature_coords_buffer[0][1][1] = feature_coords_buffer[0][1][1] + 0.0015
+                        feature_coords_buffer[0][1][1] = feature_coords_buffer[0][1][1] - 0.0015
                         feature_coords_buffer[0][2][0] = feature_coords_buffer[0][2][0] + 0.0015
-                        feature_coords_buffer[0][2][1] = feature_coords_buffer[0][2][1] - 0.0015
+                        feature_coords_buffer[0][2][1] = feature_coords_buffer[0][2][1] + 0.0015
                         feature_coords_buffer[0][3][0] = feature_coords_buffer[0][3][0] - 0.0015
-                        feature_coords_buffer[0][3][1] = feature_coords_buffer[0][3][1] - 0.0015
+                        feature_coords_buffer[0][3][1] = feature_coords_buffer[0][3][1] + 0.0015
                         feature_coords_buffer[0][4][0] = feature_coords_buffer[0][4][0] - 0.0015
-                        feature_coords_buffer[0][4][1] = feature_coords_buffer[0][4][1] + 0.0015
+                        feature_coords_buffer[0][4][1] = feature_coords_buffer[0][4][1] - 0.0015
                         
                         request = {  
                            "name": order_name,
@@ -413,9 +406,9 @@ def main(argv):
                            "products":[
                               {  
                                  "item_ids":chunk,
-                                 "item_type":"PSScene4Band",
+                                 "item_type":"PSScene",
                                   
-                                 "product_bundle":"analytic_sr_udm2,analytic_sr"
+                                 "product_bundle":"analytic_sr_udm2"
                               }
                            ],
                            "tools": [
@@ -510,7 +503,9 @@ def main(argv):
                 print("Order Chunks Failed: {}".format(order_list_failed))
                 print("Download Chunks Failed: {}".format(order_list_failed_download))
                 print("--- %s seconds ---" % (time.time() - start_time))
-            
+    
+    else:
+      print('No geojsons found!')
         
     
 print(sys.argv)
